@@ -14,8 +14,9 @@
     <name>gateway</name>
     <description>gateway</description>
     <properties>
-        <java.version>17</java.version>
+        <java.version>16</java.version>
         <spring-cloud.version>2021.0.5</spring-cloud.version>
+        <docker.image.prefix>microservices-test</docker.image.prefix>
         <snakeyaml.version>1.32</snakeyaml.version>
     </properties>
     <dependencies>
