@@ -1,38 +1,42 @@
-package com.example.productservice.models;
+package com.example.jobservice.models;
 
+import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
-import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
-@Table(name = "product")
 @Entity
+@Table(name = "address")
 @Getter
 @Setter
 @ToString
-public class Product extends RepresentationModel<Product> {
+public class Address {
     @Id
-    @Column(name = "product_id", nullable = false)
+    @Column(name = "address_id")
     private UUID id;
-    private String title;
-    private String description;
-    private BigDecimal price;
+    @NotNull
+    private String country;
+    @NotNull
+    private String city;
+    @NotNull
+    private String streetName;
+    @NotNull
+    private int houseNumber;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Product product = (Product) o;
-        return id != null && Objects.equals(id, product.id);
+        Address address = (Address) o;
+        return id != null && Objects.equals(id, address.id);
     }
 
     @Override
@@ -40,7 +44,3 @@ public class Product extends RepresentationModel<Product> {
         return getClass().hashCode();
     }
 }
-
-
-
-

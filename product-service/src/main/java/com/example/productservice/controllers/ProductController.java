@@ -11,7 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.List;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/products")
 public class ProductController {
 
     ProductService productService;
@@ -27,8 +27,7 @@ public class ProductController {
         ProductDto productDto = productService.saveProduct(request);
         return ResponseEntity
                 .created(ucb
-                        .path("product")
-                        .path(productDto.getId().toString())
+                        .path("products").path(productDto.getId().toString())
                         .build().toUri())
                 .body(productDto);
     }
@@ -39,19 +38,20 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ProductDto getById(@PathVariable String id) {
-        return productService.getById(id);
+    public ResponseEntity<ProductDto> getById(@PathVariable String id) {
+        return ResponseEntity.ok().body(productService.getById(id));
     }
 
     @PutMapping("/{id}")
-    public ProductDto updateMessage(@RequestBody ProductRequest productRequest,
-                                    @PathVariable String id) {
-        return productService.update(productRequest, id);
+    public ResponseEntity<ProductDto> updateMessage(
+            @RequestBody ProductRequest productRequest,
+            @PathVariable String id) {
+        return ResponseEntity.ok().body(productService.update(productRequest, id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteById(@PathVariable String id) {
         productService.delete(id);
-        return ResponseEntity.accepted().body("Message " + id + " deleted");
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: config-server
+  profiles:
+    active:
+      - native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:\config
+
+server:
+  port: 8888
+
+encrypt:
+  key: 124piqAD124ESFO4hwrq21924ifk
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

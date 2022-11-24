@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://db-product:5432/product-service
+    username: postgres
+    password: "{cipher}bd5fc08f73615af76090c70d9cecd2e8a35247dcadc6d0f1ad1b30c591a2e6ac"
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://eurekaserver:8761/eureka/

@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: product-service
+  profiles:
+    active: test
+  cloud:
+    config:
+      #      uri: http://configserver:8888
+      uri: http://localhost:8888

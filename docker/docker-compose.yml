@@ -1,13 +1,127 @@
-version: '3.7'
 services:
-  database:
+  db-job-service:
     image: postgres:latest
     ports:
-      - "5432:5432"
+      - 5434:${DB_PORT}
+    user: postgres
     environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "post"
-      POSTGRES_DB: "McroservicesTestMessage"
+      POSTGRES_DB: "job-service"
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    networks:
+      backend:
+        aliases:
+          - "db-job"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  db-product-service:
+    image: postgres:latest
+    ports:
+      - 5433:${DB_PORT}
+    user: postgres
+    environment:
+      POSTGRES_DB: "product-service"
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    networks:
+      backend:
+        aliases:
+          - "db-product"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  configserver:
+    image: microservices-test/config-server:0.0.1-SNAPSHOT
+    ports:
+      - ${CONF_SERVER_PORT}:${CONF_SERVER_PORT}
+    environment:
+      ENCRYPT_KEY: "124piqAD124ESFO4hwrq21924ifk"
+      SERVER_PORT: ${CONF_SERVER_PORT}
+      SPRING_PROFILES_ACTIVE: native
+    networks:
+      backend:
+        aliases:
+          - "configserver"
+  eurekaserver:
+    image: microservices-test/eureka-server:0.0.1-SNAPSHOT
+    ports:
+      - "8761:8761"
+    environment:
+      SERVER_PORT: "8761"
+    depends_on:
+      db-job-service:
+        condition: service_healthy
+      db-product-service:
+        condition: service_healthy
+      configserver:
+        condition: service_started
+    networks:
+      backend:
+        aliases:
+          - "eurekaserver"
+  gatewayserver:
+    image: microservices-test/gateway:0.0.1-SNAPSHOT
+    ports:
+      - "8765:8765"
+    environment:
+      PROFILE: "default"
+      SERVER_PORT: "8765"
+      CONFIGSERVER_URI: ${CONF_SERVER_URI}
+      EUREKASERVER_URI: "http://eurekaserver:8761/eureka/"
+      EUREKASERVER_PORT: "8761"
+      CONFIGSERVER_PORT: ${CONF_SERVER_PORT}
+    depends_on:
+      db-job-service:
+        condition: service_healthy
+      db-product-service:
+        condition: service_healthy
+      configserver:
+        condition: service_started
+      eurekaserver:
+        condition: service_started
+    networks:
+      backend:
+        aliases:
+          - "gateway"
+  jobservice:
+    image: microservices-test/job-service:0.0.1-SNAPSHOT
+    environment:
+      SERVER_PORT: "8081"
+      PROFILE: "dev"
+      CONFIGSERVER_URI: ${CONF_SERVER_URI}
+      CONFIGSERVER_PORT: ${CONF_SERVER_PORT}
+      DATABASESERVER_PORT: ${DB_PORT}
+    depends_on:
+      db-job-service:
+        condition: service_healthy
+      configserver:
+        condition: service_started
+    ports:
+      - "8081:8081"
+    networks:
+      - backend
+  productservice:
+    image: microservices-test/product-service:0.0.1-SNAPSHOT
+    environment:
+      SERVER_PORT: "8082"
+      PROFILE: "dev"
+      CONFIGSERVER_URI: ${CONF_SERVER_URI}
+      CONFIGSERVER_PORT: ${CONF_SERVER_PORT}
+      DATABASESERVER_PORT: ${DB_PORT}
+    depends_on:
+      db-product-service:
+        condition: service_healthy
+      configserver:
+        condition: service_started
+    ports:
+      - "8082:8082"
+    networks:
+      - backend
 networks:
   backend:
     driver: bridge

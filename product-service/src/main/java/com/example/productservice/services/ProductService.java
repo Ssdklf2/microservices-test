@@ -1,5 +1,8 @@
 package com.example.productservice.services;
 
+import com.example.productservice.exceptions.InvalidUUIDException;
+import com.example.productservice.exceptions.NoDataException;
+import com.example.productservice.exceptions.NotFoundException;
 import com.example.productservice.models.DTO.ProductDto;
 import com.example.productservice.models.DTO.ProductRequest;
 import com.example.productservice.models.Product;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -29,17 +33,23 @@ public class ProductService {
     }
 
     public List<ProductRequest> getList() {
-        return productRepository.findAll()
+        List<ProductRequest> list = productRepository.findAll()
                 .stream().map(product -> mapper.map(product, ProductRequest.class))
-                .toList();
+                .collect(Collectors.toList());
+        if (list.isEmpty()) throw new NoDataException("Products");
+        return list;
     }
 
     public ProductDto getById(String id) {
-        Product product = productRepository.findById(UUID.fromString(id)).orElse(null);
-        if (product != null) {
-            return mapper.map(product, ProductDto.class);
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(id);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidUUIDException(id);
         }
-        return null; //exc
+        Product product = productRepository.findById(uuid)
+                .orElseThrow(() -> new NotFoundException("Product", id));
+        return mapper.map(product, ProductDto.class);
     }
 
     public ProductDto update(ProductRequest productRequest, String id) {
