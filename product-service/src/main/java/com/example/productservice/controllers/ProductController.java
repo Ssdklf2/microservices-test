@@ -2,8 +2,7 @@ package com.example.productservice.controllers;
 
 import com.example.productservice.exceptions.ValidationException;
 import com.example.productservice.models.DTO.ProductDto;
-import com.example.productservice.models.DTO.ProductRequest;
-import com.example.productservice.models.DTO.ProductSorter;
+import com.example.productservice.models.DTO.ProductResponse;
 import com.example.productservice.services.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,7 @@ import java.util.List;
 @Slf4j
 public class ProductController {
 
-    ProductService productService;
+    private final ProductService productService;
 
     @Autowired
     public ProductController(ProductService productService) {
@@ -29,42 +28,42 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> createMessage(
-            @Valid @RequestBody ProductRequest request,
-            UriComponentsBuilder ucb,
-            BindingResult result) {
+    public ResponseEntity<ProductResponse> createMessage(
+            @Valid @RequestBody ProductDto request,
+            BindingResult result,
+            UriComponentsBuilder ucb) {
         checkValidationErrors(result);
-        ProductDto productDto = productService.saveProduct(request);
+        ProductResponse productResponse = productService.saveProduct(request);
         return ResponseEntity
                 .created(ucb
-                        .path("products").path(productDto.getId().toString())
+                        .path("products").path(productResponse.getId().toString())
                         .build().toUri())
-                .body(productDto);
+                .body(productResponse);
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductRequest>> getList() {
+    public ResponseEntity<List<ProductDto>> getList() {
         return ResponseEntity.ok().body(productService.getList());
     }
 
     @GetMapping("/{pageNumber}/{pageSize}")
-    public ResponseEntity<List<ProductRequest>> getPages(@PathVariable Integer pageNumber,
-                                                         @PathVariable Integer pageSize) {
+    public ResponseEntity<List<ProductDto>> getPages(@PathVariable Integer pageNumber,
+                                                     @PathVariable Integer pageSize) {
         return ResponseEntity.ok().body(productService.getPages(pageNumber, pageSize));
     }
 
-    @GetMapping("/product/{id}")
-    public ResponseEntity<ProductDto> getById(@PathVariable String id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponse> getById(@PathVariable String id) {
         return ResponseEntity.ok().body(productService.getById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDto> updateMessage(
-            @Valid @RequestBody ProductRequest productRequest,
-            @PathVariable String id,
-            BindingResult result) {
+    public ResponseEntity<ProductResponse> updateMessage(
+            @Valid @RequestBody ProductDto productDto,
+            BindingResult result,
+            @PathVariable String id) {
         checkValidationErrors(result);
-        return ResponseEntity.ok().body(productService.update(productRequest, id));
+        return ResponseEntity.ok().body(productService.update(productDto, id));
     }
 
     @DeleteMapping("/{id}")
@@ -73,15 +72,7 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/sort")
-    public ResponseEntity<List<ProductRequest>> sortProducts(
-            @Valid @RequestBody ProductSorter productSorter, BindingResult result
-    ) {
-        checkValidationErrors(result);
-        return ResponseEntity.ok().body(productService.sort(productSorter));
-    }
-
-    private static void checkValidationErrors(BindingResult result) {
+    protected static void checkValidationErrors(BindingResult result) {
         List<ObjectError> errors = result.getAllErrors();
         var builder = new StringBuilder();
         for (int i = 0; i < errors.size(); i++) {

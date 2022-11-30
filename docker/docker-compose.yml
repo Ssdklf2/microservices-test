@@ -122,6 +122,40 @@ services:
       - "8082:8082"
     networks:
       - backend
+  db-keycloak:
+    image: postgres:latest
+    ports:
+      - 5430:${DB_PORT}
+    user: postgres
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    networks:
+      backend:
+        aliases:
+          - "db-keycloak"
+  keycloak:
+    depends_on:
+      - db-keycloak
+    container_name: local_keycloak
+    environment:
+      KEYCLOAK_VERSION: ${KEYCLOAK_VERSION}
+      DB_SCHEMA: public
+      DB_VENDOR: POSTGRES
+      DB_DATABASE: keycloak
+      DB_USER: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      DB_ADDR: db-keycloak
+    image: jboss/keycloak:${KEYCLOAK_VERSION}
+    ports:
+      - 28080:8080
+    networks:
+      backend:
+        aliases:
+          - "keycloak"
 networks:
   backend:
     driver: bridge

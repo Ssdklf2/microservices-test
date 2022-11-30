@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ProductSpecification implements Specification<Product> {
 
-    List<SearchCriteria> list;
+    private final List<SearchCriteria> list;
 
     public ProductSpecification() {
         this.list = new ArrayList<>();

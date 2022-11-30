@@ -4,7 +4,7 @@ import com.example.productservice.exceptions.InvalidUUIDException;
 import com.example.productservice.exceptions.NoDataException;
 import com.example.productservice.exceptions.NotFoundException;
 import com.example.productservice.models.DTO.ProductDto;
-import com.example.productservice.models.DTO.ProductRequest;
+import com.example.productservice.models.DTO.ProductResponse;
 import com.example.productservice.models.DTO.ProductSorter;
 import com.example.productservice.models.Product;
 import com.example.productservice.repositories.ProductRepository;
@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -25,49 +26,51 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class ProductService {
-    ProductRepository productRepository;
-    ModelMapper mapper = new ModelMapper();
+    private final ProductRepository productRepository;
+    private final ModelMapper mapper = new ModelMapper();
 
     @Autowired
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
-    public ProductDto saveProduct(ProductRequest request) {
+    @Transactional
+    public ProductResponse saveProduct(ProductDto request) {
         Product product = mapper.map(request, Product.class);
         product.setId(UUID.randomUUID());
         product = productRepository.save(product);
-        return mapper.map(product, ProductDto.class);
+        return mapper.map(product, ProductResponse.class);
     }
 
-    public List<ProductRequest> getPages(Integer pageNumber, Integer pageSize) {
+    public List<ProductDto> getPages(Integer pageNumber, Integer pageSize) {
         return productRepository.findAll(PageRequest.of(pageNumber, pageSize))
-                .stream().map(product -> mapper.map(product, ProductRequest.class))
+                .stream().map(product -> mapper.map(product, ProductDto.class))
                 .collect(Collectors.toList());
     }
 
-    public List<ProductRequest> getList() {
-        List<ProductRequest> list = productRepository.findAll()
-                .stream().map(product -> mapper.map(product, ProductRequest.class))
+    public List<ProductDto> getList() {
+        List<ProductDto> list = productRepository.findAll()
+                .stream().map(product -> mapper.map(product, ProductDto.class))
                 .collect(Collectors.toList());
         if (list.isEmpty()) throw new NoDataException("Products");
         return list;
     }
 
-    public ProductDto getById(String id) {
+    public ProductResponse getById(String id) {
         UUID uuid = getValidUUID(id);
         Product product = getProduct(id, uuid);
-        return mapper.map(product, ProductDto.class);
+        return mapper.map(product, ProductResponse.class);
     }
 
-    public ProductDto update(ProductRequest productRequest, String id) {
+    @Transactional
+    public ProductResponse update(ProductDto productDto, String id) {
         UUID uuid = getValidUUID(id);
         Product product = getProduct(id, uuid);
-        product.setTitle(productRequest.getTitle());
-        product.setDescription(productRequest.getDescription());
-        product.setPrice(productRequest.getPrice());
+        product.setTitle(productDto.getTitle());
+        product.setDescription(productDto.getDescription());
+        product.setPrice(productDto.getPrice());
         productRepository.save(product);
-        return mapper.map(product, ProductDto.class);
+        return mapper.map(product, ProductResponse.class);
     }
 
     private Product getProduct(String id, UUID uuid) {
@@ -75,13 +78,14 @@ public class ProductService {
                 .orElseThrow(() -> new NotFoundException("Product", id));
     }
 
+    @Transactional
     public void delete(String id) {
         UUID uuid = getValidUUID(id);
         Product product = getProduct(id, uuid);
         productRepository.delete(product);
     }
 
-    public List<ProductRequest> sort(ProductSorter productSorter) {
+    public List<ProductDto> sort(ProductSorter productSorter) {
         var specification = new ProductSpecification();
         var title = productSorter.getTitle();
         var priceFrom = productSorter.getPriceFrom();
@@ -91,13 +95,13 @@ public class ProductService {
                 "\nTitle:  " + title);
         addCriteriaToSpecification(specification, title, priceFrom, priceTo);
         return productRepository.findAll(specification).stream()
-                .map(product -> mapper.map(product, ProductRequest.class))
+                .map(product -> mapper.map(product, ProductDto.class))
                 .collect(Collectors.toList());
     }
 
     private static void addCriteriaToSpecification(ProductSpecification specification,
                                                    String title, BigDecimal priceFrom,
-                                                   BigDecimal priceTo) {
+                                                   Integer priceTo) {
         if (title != null && !title.isBlank()) {
             specification.addCriteria(
                     new SearchCriteria("title", title, SearchOperation.LIKE));

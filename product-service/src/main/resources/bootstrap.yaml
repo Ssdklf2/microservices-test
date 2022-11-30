@@ -2,8 +2,8 @@ spring:
   application:
     name: product-service
   profiles:
-    active: test
+    active: dev
   cloud:
     config:
-      #      uri: http://configserver:8888
-      uri: http://localhost:8888
+      uri: http://configserver:8888
+#      uri: http://localhost:8888

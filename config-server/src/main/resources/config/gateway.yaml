@@ -7,15 +7,15 @@ spring:
         - id: job-service
           uri: lb://job-service
           predicates:
-            - Path=/job/**
+            - Path=/jobs/**
           filters:
-            - RewritePath=/job/(?<path>.*), /$\{path}
+            - RewritePath=/jobs/(?<path>.*), /$\{path}
         - id: product-service
           uri: lb://product-service
           predicates:
-            - Path=/product/**
+            - Path=/products/**
           filters:
-            - RewritePath=/product/(?<path>.*), /$\{path}
+            - RewritePath=/products/(?<path>.*), /$\{path}
 #      discovery:
 #        locator:
 #          lower-case-service-id: true

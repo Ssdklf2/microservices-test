@@ -10,7 +10,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -25,7 +24,7 @@ public class Product extends RepresentationModel<Product> {
     private UUID id;
     private String title;
     private String description;
-    private BigDecimal price;
+    private int price;
 
     @Override
     public boolean equals(Object o) {

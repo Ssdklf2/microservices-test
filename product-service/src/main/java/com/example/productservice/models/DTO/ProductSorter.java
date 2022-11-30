@@ -15,5 +15,5 @@ public class ProductSorter {
     private BigDecimal priceFrom;
 
     @Max(Integer.MAX_VALUE)
-    private BigDecimal priceTo;
+    private int priceTo;
 }
