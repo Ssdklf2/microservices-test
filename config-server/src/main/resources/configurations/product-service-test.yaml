@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/test-product-service
+    username: postgres
+    password: "{cipher}bd5fc08f73615af76090c70d9cecd2e8a35247dcadc6d0f1ad1b30c591a2e6ac"
+eureka:
+  client:
+    enabled: false
+keycloak:
+  realm: microservices-test-realm
+  auth-server-url: http://localhost:28080/auth
+  ssl-required: external
+  resource: microservices-test-client
+  credentials:
+    secret: 25c9192b-42a2-4fcd-8b34-087c7e0074a7
+  use-resource-role-mappings: true
+  bearer-only: true

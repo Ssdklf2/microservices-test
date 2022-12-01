@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
-import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +17,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
-public class Product extends RepresentationModel<Product> {
+public class Product {
     @Id
     @Column(name = "product_id", nullable = false)
     private UUID id;

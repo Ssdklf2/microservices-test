@@ -1,12 +1,16 @@
 package com.example.productservice.models.DTO;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.UUID;
 
-@Data
-public class ProductResponse {
+@Getter
+@Setter
+@ToString
+public class ProductResponse extends RepresentationModel<ProductResponse> {
     @ToString.Exclude
     private UUID id;
     private String title;

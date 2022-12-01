@@ -1,8 +1,0 @@
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5433/test-product-service
-    username: postgres
-    password: "{cipher}bd5fc08f73615af76090c70d9cecd2e8a35247dcadc6d0f1ad1b30c591a2e6ac"
-eureka:
-  client:
-    enabled: false

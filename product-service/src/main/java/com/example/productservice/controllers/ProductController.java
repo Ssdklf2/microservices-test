@@ -6,14 +6,19 @@ import com.example.productservice.models.DTO.ProductResponse;
 import com.example.productservice.services.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/products")
@@ -27,6 +32,7 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @RolesAllowed({"USER", "ADMIN"})
     @PostMapping
     public ResponseEntity<ProductResponse> createMessage(
             @Valid @RequestBody ProductDto request,
@@ -54,9 +60,14 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getById(@PathVariable String id) {
-        return ResponseEntity.ok().body(productService.getById(id));
+        ProductResponse productResponse = productService.getById(id);
+        Link selfLink = linkTo(methodOn(ProductController.class).getById(id)).withSelfRel();
+        Link deleteLink = linkTo(methodOn(ProductController.class).deleteById(id)).withRel("delete product");
+        productResponse.add(selfLink, deleteLink);
+        return ResponseEntity.ok().body(productResponse);
     }
 
+    @RolesAllowed({"USER", "ADMIN"})
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponse> updateMessage(
             @Valid @RequestBody ProductDto productDto,
@@ -66,6 +77,7 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.update(productDto, id));
     }
 
+    @RolesAllowed("ADMIN")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteById(@PathVariable String id) {
         productService.delete(id);
