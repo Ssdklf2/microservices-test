@@ -20,3 +20,5 @@ keycloak:
     secret: 25c9192b-42a2-4fcd-8b34-087c7e0074a7
   use-resource-role-mappings: true
   bearer-only: true
+server:
+  forward-headers-strategy: native

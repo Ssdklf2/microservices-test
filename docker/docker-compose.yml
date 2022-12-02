@@ -95,7 +95,7 @@ services:
           - "gateway"
   jobservice:
     container_name: job-service
-    image: microservices-test/job-service:0.0.1-SNAPSHOT
+    image: microservices-test/job-service:0.1.0-SNAPSHOT
     environment:
       SERVER_PORT: "8081"
       PROFILE: "dev"

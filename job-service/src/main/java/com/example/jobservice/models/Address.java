@@ -2,6 +2,7 @@ package com.example.jobservice.models;
 
 import com.sun.istack.NotNull;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @Accessors(chain = true)
+@NoArgsConstructor
 public class Address {
     @Id
     @Column(name = "address_id")

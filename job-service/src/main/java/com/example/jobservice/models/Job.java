@@ -1,13 +1,16 @@
 package com.example.jobservice.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -20,7 +23,8 @@ import java.util.UUID;
 @Setter
 @ToString
 @Accessors(chain = true)
-public class Job {
+@NoArgsConstructor
+public class Job extends RepresentationModel<Job> {
 
     @Id
     @Column(name = "job_id")
@@ -35,6 +39,14 @@ public class Job {
     @Fetch(FetchMode.SELECT)
     @JsonProperty("address")
     private Address address;
+
+    @JsonCreator
+    public Job(String title, String description, BigDecimal salary, Address address) {
+        this.title = title;
+        this.description = description;
+        this.salary = salary;
+        this.address = address;
+    }
 
     @Override
     public boolean equals(Object o) {

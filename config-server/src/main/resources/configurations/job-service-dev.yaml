@@ -11,3 +11,5 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://eurekaserver:8761/eureka/
+server:
+  forward-headers-strategy: native
