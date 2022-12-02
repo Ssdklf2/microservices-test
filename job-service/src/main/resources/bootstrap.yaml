@@ -2,8 +2,8 @@ spring:
   application:
     name: job-service
   profiles:
-    active: dev
+    active: test
   cloud:
     config:
-      uri: http://configserver:8888
-#      uri: http://localhost:8888
+      #      uri: http://configserver:8888
+      uri: http://localhost:8888

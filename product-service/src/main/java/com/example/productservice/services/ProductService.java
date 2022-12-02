@@ -58,14 +58,14 @@ public class ProductService {
 
     public ProductResponse getById(String id) {
         UUID uuid = getValidUUID(id);
-        Product product = getProduct(id, uuid);
+        Product product = getProduct(uuid);
         return mapper.map(product, ProductResponse.class);
     }
 
     @Transactional
     public ProductResponse update(ProductDto productDto, String id) {
         UUID uuid = getValidUUID(id);
-        Product product = getProduct(id, uuid);
+        Product product = getProduct(uuid);
         product.setTitle(productDto.getTitle());
         product.setDescription(productDto.getDescription());
         product.setPrice(productDto.getPrice());
@@ -73,15 +73,15 @@ public class ProductService {
         return mapper.map(product, ProductResponse.class);
     }
 
-    private Product getProduct(String id, UUID uuid) {
+    private Product getProduct(UUID uuid) {
         return productRepository.findById(uuid)
-                .orElseThrow(() -> new NotFoundException("Product", id));
+                .orElseThrow(() -> new NotFoundException("Product", uuid));
     }
 
     @Transactional
     public void delete(String id) {
         UUID uuid = getValidUUID(id);
-        Product product = getProduct(id, uuid);
+        Product product = getProduct(uuid);
         productRepository.delete(product);
     }
 

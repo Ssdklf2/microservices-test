@@ -4,6 +4,7 @@ import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
+@Accessors(chain = true)
 public class Address {
     @Id
     @Column(name = "address_id")
