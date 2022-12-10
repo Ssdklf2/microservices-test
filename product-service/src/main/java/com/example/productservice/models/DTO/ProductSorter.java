@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 @Data
 public class ProductSorter {
-    @Size(min = 1, max = 30)
+    @Size(max = 30)
     private String title;
 
     @Max(Integer.MAX_VALUE)
