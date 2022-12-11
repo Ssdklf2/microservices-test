@@ -94,13 +94,15 @@ public class ProductService {
                 "\nPrice:  " + priceFrom + " - " + priceTo +
                 "\nTitle:  " + title);
         addCriteriaToSpecification(specification, title, priceFrom, priceTo);
-        return productRepository.findAll(specification).stream()
+        List<ProductDto> list = productRepository.findAll(specification).stream()
                 .map(product -> mapper.map(product, ProductDto.class))
                 .collect(Collectors.toList());
+        if (list.isEmpty()) throw new NoDataException("Products");
+        return list;
     }
 
     private static void addCriteriaToSpecification(ProductSpecification specification,
-                                                   String title, BigDecimal priceFrom,
+                                                   String title, Integer priceFrom,
                                                    Integer priceTo) {
         if (title != null && !title.isBlank()) {
             specification.addCriteria(
