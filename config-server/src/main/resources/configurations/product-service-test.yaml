@@ -3,6 +3,8 @@ spring:
     url: jdbc:postgresql://localhost:5433/test-product-service
     username: postgres
     password: "{cipher}bd5fc08f73615af76090c70d9cecd2e8a35247dcadc6d0f1ad1b30c591a2e6ac"
+  flyway:
+    locations: classpath:/db/migration,classpath:/db/testdata
 eureka:
   client:
     enabled: false

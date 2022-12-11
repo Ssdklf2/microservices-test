@@ -1,6 +1,8 @@
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
+  flyway:
+    locations: classpath:/db/migration
   jpa:
     database: POSTGRESQL
     show-sql: true
