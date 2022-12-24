@@ -1,8 +1,8 @@
 package com.example.productservice.controllers;
 
 import com.example.productservice.exceptions.ValidationException;
-import com.example.productservice.models.DTO.ProductDto;
-import com.example.productservice.models.DTO.ProductResponse;
+import com.example.productservice.DTO.ProductDto;
+import com.example.productservice.DTO.ProductResponse;
 import com.example.productservice.services.ProductService;
 import org.junit.jupiter.api.Disabled;
 import org.mockito.Mockito;

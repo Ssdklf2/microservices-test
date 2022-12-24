@@ -1,11 +1,11 @@
 package com.example.productservice.services;
 
+import com.example.productservice.DTO.ProductDto;
+import com.example.productservice.DTO.ProductResponse;
+import com.example.productservice.DTO.ProductSorter;
 import com.example.productservice.exceptions.InvalidUUIDException;
 import com.example.productservice.exceptions.NoDataException;
 import com.example.productservice.exceptions.NotFoundException;
-import com.example.productservice.models.DTO.ProductDto;
-import com.example.productservice.models.DTO.ProductResponse;
-import com.example.productservice.models.DTO.ProductSorter;
 import com.example.productservice.models.Product;
 import com.example.productservice.repositories.ProductRepository;
 import com.example.productservice.specifications.ProductSpecification;
@@ -18,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;

@@ -1,7 +1,7 @@
 package com.example.productservice.controllers;
 
-import com.example.productservice.models.DTO.ProductDto;
-import com.example.productservice.models.DTO.ProductSorter;
+import com.example.productservice.DTO.ProductDto;
+import com.example.productservice.DTO.ProductSorter;
 import com.example.productservice.services.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,10 +1,6 @@
 package com.example.productservice.controllers;
 
-import com.example.productservice.exceptions.InvalidUUIDException;
-import com.example.productservice.exceptions.NoDataException;
-import com.example.productservice.exceptions.NotFoundException;
-import com.example.productservice.exceptions.ValidationException;
-import com.example.productservice.models.ErrorResponse;
+import com.example.productservice.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
